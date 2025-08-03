@@ -8,6 +8,7 @@ import mysql.connector
 import bcrypt
 from email_validator import validate_email, EmailNotValidError
 import re
+import os
 
 # --- PAGE CONFIGURATION ---
 st.set_page_config(
@@ -16,23 +17,21 @@ st.set_page_config(
     layout="wide"
 )
 
-# --- DATABASE CONNECTION ---
 def get_db_connection():
     try:
         connection = mysql.connector.connect(
-            host=st.secrets["connections"]["mysql"]["host"],
-            user=st.secrets["connections"]["mysql"]["user"],
-            password=st.secrets["connections"]["mysql"]["password"],
-            database=st.secrets["connections"]["mysql"]["database"]
+            host=os.environ.get("streamlit_connections_mysql_host"),
+            user=os.environ.get("streamlit_connections_mysql_user"),
+            password=os.environ.get("streamlit_connections_mysql_password"),
+            database=os.environ.get("streamlit_connections_mysql_database")
         )
         if connection.is_connected():
             return connection
     except mysql.connector.Error as err:
         st.error(f"Database Error: {err}")
-        return None
     except Exception as e:
-        st.error(f"An error occurred: {e}. Please ensure your secrets.toml file is correctly configured.")
-        return None
+        st.error(f"Unexpected Error: {e}")
+    return None
 
 # --- DATABASE FUNCTIONS ---
 def create_user(username, email, password):
