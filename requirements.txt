@@ -1,0 +1,10 @@
+streamlit
+pandas
+joblib
+numpy
+scipy
+plotly
+mysql-connector-python
+bcrypt
+email-validator
+scikit-learn
